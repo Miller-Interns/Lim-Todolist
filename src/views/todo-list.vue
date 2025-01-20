@@ -266,25 +266,27 @@ const getCategoryName = (taskId: number): string => {
               </div>
             </div>
           </li>
-          
-          <!-- Add New Task -->
-          <li v-if="isAddingTask" class="add-task-input">
-            <input
-              type="text"
-              v-model="newTask"
-              placeholder="Enter new task..."
-              @keyup.enter="saveTask"
-              @blur="cancelAddingTask"
-              class="task-input"
-            />
-          </li>
-          <li v-else class="add-task-button">
-            <button @click="startAddingTask" class="add-task-btn">➕ Add Task</button>
-          </li>
         </ul>
       </div>
       <div v-else>
-        <h1>Please select a category to view tasks.</h1>
+        <h1 v-if="todoStore.categories.length === 0">No categories available. Please create a category.</h1>
+        <h1 v-else-if="!todoStore.selectedCategoryId">Please select a category to view tasks.</h1>
+        <h1 v-else-if="filteredTasks.length === 0">No tasks available.</h1>
+      </div>
+      <div v-if="todoStore.selectedCategoryId" class="add-task-container">
+        <li v-if="isAddingTask" class="add-task-input">
+          <input
+            type="text"
+            v-model="newTask"
+            placeholder="Enter new task..."
+            @keyup.enter="saveTask"
+            @blur="cancelAddingTask"
+            class="task-input"
+          />
+        </li>
+        <li v-else class="add-task-button">
+          <button @click="startAddingTask" class="add-task-btn">➕ Add Task</button>
+        </li>
       </div>
      </main>
   </div>
