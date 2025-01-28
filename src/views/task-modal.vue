@@ -18,6 +18,7 @@ const handleAddTask = () => {
   if (!categoryTitle.value.trim() || !taskDescriptions.value.trim()) {
     alert('Please provide both a category and tasks.');
     return;
+    
   }
 
   const tasks = taskDescriptions.value
@@ -60,7 +61,6 @@ const handleAddTask = () => {
             required
           />
         </div>
-
         <div class="form-group">
           <label for="task-desc" class="form-label">List of Tasks:</label>
           <textarea
@@ -72,7 +72,6 @@ const handleAddTask = () => {
             required
           ></textarea>
         </div>
-
         <div class="modal-actions">
           <button type="submit" class="modal-btn save-btn">Save</button>
           <button type="button" class="modal-btn cancel-btn" @click="emitClose">

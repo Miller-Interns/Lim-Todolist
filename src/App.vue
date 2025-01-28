@@ -1,27 +1,22 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <div class="app">
-      <nav>
-        <RouterLink to="/">Home</RouterLink> |
-        <RouterLink to="/todoListView">Go to App</RouterLink>
-      </nav>
-      <br>
-      <div class="wrapper">
-        <RouterView />
-      </div>
+    <nav>
+      <RouterLink to="/">Home</RouterLink> |
+      <RouterLink :to="{ name: 'todoListView' }">Go to App</RouterLink>
+    </nav>
+    <br />
+    <div class="wrapper">
+      <RouterView />
+    </div>
   </div>
-
 </template>
 
 <style scoped>
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   height: 100%;
-
 }
 
 .app {
@@ -29,8 +24,8 @@ body, html {
   height: 100vh;
   width: 100vw;
   display: flex;
-  flex-direction: column; 
-  align-items: center; 
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   box-sizing: border-box;
   background-color: white;
