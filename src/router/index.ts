@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import { RouteName } from '@/enums/RouteName'
 import HomeView from '../views/home-view.vue'
 import TodoListView from '../views/todo-list.vue'
 
@@ -8,12 +8,12 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: RouteName.HOME,
       component: HomeView,
     },
     {
       path: '/todo',
-      name: 'todoListView',
+      name: RouteName.TODOLISTVIEW,
       component: TodoListView,
     },
   ],

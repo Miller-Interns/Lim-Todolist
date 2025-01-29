@@ -62,7 +62,8 @@ export function useFilterStatus() {
       return `${completedTasks} out of ${totalTasks} Tasks Completed`
     }
 
-    const statusText = selectedStatus.value === FilterStatus.PENDING ? 'Pending' : 'Completed'
+    const statusText =
+      selectedStatus.value === FilterStatus.PENDING ? FilterStatus.PENDING : FilterStatus.COMPLETED
     const taskText = totalTasks === 1 ? 'Task' : 'Tasks'
 
     return `${totalTasks} ${taskText} ${statusText}`

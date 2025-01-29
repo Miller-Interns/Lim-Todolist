@@ -1,12 +1,8 @@
 import { useTodoStore } from '@/stores/todoStore'
-import { FilterStatus } from '@/enums/FilterStatus'
 import { showSuccessToast, showErrorToast } from '@/utils/toast'
-import { ref } from 'vue'
 
 export function useCategory() {
   const todoStore = useTodoStore()
-
-  const selectedStatus = ref<string>('All')
 
   const addCategory = (newCategory: { title: string; tasks: string[] }) => {
     // Check for duplicate category title (case insensitive)
@@ -73,7 +69,6 @@ export function useCategory() {
 
   const selectCategory = (categoryId: number) => {
     todoStore.selectedCategoryId = categoryId
-    selectedStatus.value = FilterStatus.ALL
   }
 
   const clearSelectedCategory = () => {
