@@ -1,15 +1,3 @@
-<script setup lang="ts">
-    import { ref } from 'vue'
-
-
-    // const routes = {
-    //     '/': home,
-    //     // '/TodoList': TodoList
-    // }
-
-
-</script>
-
 <template>
     <nav class="nav-container">
       <a href="/">Home</a> |
