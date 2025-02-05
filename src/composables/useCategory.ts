@@ -1,20 +1,18 @@
-import { useTodoStore } from "@/stores/todoStore";
+import { useTodoStore } from '@/stores/todoStore'
+import { showSuccessToast, showErrorToast } from '@/utils/toast'
 
-import { ref } from 'vue'
 export function useCategory() {
-  const todoStore = useTodoStore();
-
-  const selectedStatus = ref<string>("All");
+  const todoStore = useTodoStore()
 
   const addCategory = (newCategory: { title: string; tasks: string[] }) => {
     // Check for duplicate category title (case insensitive)
     const isDuplicate = todoStore.categories.some(
-      (cat) => cat.title.toLowerCase() === newCategory.title.toLowerCase()
-    );
+      (cat) => cat.title.toLowerCase() === newCategory.title.toLowerCase(),
+    )
 
     if (isDuplicate) {
-      window.alert("A category with the same title already exists.");
-      return;
+      showErrorToast('A category with the same title already exists.')
+      return
     }
 
     const newTodoCategory = {
@@ -25,61 +23,71 @@ export function useCategory() {
         description: task,
         completed: false,
       })),
-    };
+    }
 
-    todoStore.categories.push(newTodoCategory);
-    window.alert("Category added successfully.");
-  };
+    todoStore.categories.push(newTodoCategory)
+    showSuccessToast('Category added successfully.')
+  }
 
-  const updateCategoryTitle = (categoryId: number, newTitle: string) => {
-    const category = todoStore.categories.find((cat) => cat.id === categoryId);
+  const updateCategory = (categoryId: number, newTitle: string) => {
+    const category = todoStore.categories.find((cat) => cat.id === categoryId)
 
     if (!category) {
-      window.alert("Category not found.");
-      return;
+      showErrorToast('Category not found.')
+      return
     }
 
     // Check for duplicate category title (excluding the current category)
     const isDuplicate = todoStore.categories.some(
-      (cat) => cat.id !== categoryId && cat.title.toLowerCase() === newTitle.toLowerCase()
-    );
+      (cat) => cat.id !== categoryId && cat.title.toLowerCase() === newTitle.toLowerCase(),
+    )
 
     if (isDuplicate) {
-      window.alert("A category with the same title already exists.");
-      return;
+      showErrorToast('A category with the same title already exists.')
+      return
     }
 
-    category.title = newTitle;
-    window.alert("Category title updated successfully.");
-  };
-
+    category.title = newTitle
+    showSuccessToast('Category title updated successfully.')
+  }
 
   const deleteCategory = (categoryId: number) => {
-    todoStore.categories = todoStore.categories.filter(cat => cat.id !== categoryId);
-    if (todoStore.selectedCategoryId === categoryId) {
-      todoStore.selectedCategoryId = null;
+    const categoryExists = todoStore.categories.some((cat) => cat.id === categoryId)
+
+    if (categoryExists) {
+      todoStore.categories = todoStore.categories.filter((cat) => cat.id !== categoryId)
+
+      if (todoStore.selectedCategoryId === categoryId) {
+        todoStore.selectedCategoryId = null
+      }
+
+      showSuccessToast('Category deleted successfully!')
+    } else {
+      showErrorToast('Category not found.')
     }
-  };
+  }
 
-
-const selectCategory = (categoryId: number) => {
-  const todoStore = useTodoStore();  // Ensure store instance is used
-  todoStore.selectedCategoryId = categoryId;  // Update store state directly
-  todoStore.currentFilter = "All";  // Reset the status filter
-  selectedStatus.value = "All";  // Reset local filter state
-};
-
-
+  const selectCategory = (categoryId: number) => {
+    todoStore.selectedCategoryId = categoryId
+  }
 
   const clearSelectedCategory = () => {
-    todoStore.selectedCategoryId = null;
-  };
+    todoStore.selectedCategoryId = null
+  }
+
+  const getCategoryName = (taskId: number): string => {
+    const category = todoStore.categories.find((cat) =>
+      cat.items.some((task) => task.id === taskId),
+    )
+    return category ? category.title : 'Unknown'
+  }
 
   return {
     addCategory,
-    updateCategoryTitle,
+    updateCategory,
     deleteCategory,
     selectCategory,
-    clearSelectedCategory
-  };
+    clearSelectedCategory,
+    getCategoryName,
+  }
 }

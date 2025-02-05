@@ -1,84 +1,93 @@
-import { useTodoStore } from "@/stores/todoStore";
+import { useTodoStore } from '@/stores/todoStore'
+import { showSuccessToast, showErrorToast } from '@/utils/toast'
 
 export function useTask() {
-  const todoStore = useTodoStore();
+  const todoStore = useTodoStore()
 
-  const addTaskToCategory = (categoryId: number | null, taskDescription: string) => {
-    if (!categoryId) {
-      window.alert("Please select a category before adding a task.");
-      return;
+  const addTask = (taskDescription: string) => {
+    if (todoStore.selectedCategoryId === null) {
+      showErrorToast('Please select a category before adding a task.')
+      return
     }
 
-    const category = todoStore.categories.find(cat => cat.id === categoryId);
+    const category = todoStore.categories.find((cat) => cat.id === todoStore.selectedCategoryId)
+
     if (category) {
-      // Check for duplicate task description (case insensitive)
       const isDuplicate = category.items.some(
-        (item) => item.description.toLowerCase() === taskDescription.toLowerCase()
-      );
+        (item) => item.description.toLowerCase() === taskDescription.toLowerCase(),
+      )
 
       if (isDuplicate) {
-        window.alert("Task with the same description already exists in this category.");
-        return;
+        showErrorToast('Task with the same description already exists in this category.')
+        return
       }
 
       category.items.push({
         id: Date.now(),
         description: taskDescription,
         completed: false,
-      });
+      })
 
-      window.alert("Task added successfully.");
+      showSuccessToast('Task added successfully!')
     } else {
-      window.alert("Category not found.");
+      showErrorToast('Category not found.')
     }
-  };
+  }
 
-  const updateTaskTitle = (taskId: number, newTitle: string) => {
-    for (const category of todoStore.categories) {
-      const task = category.items.find((item) => item.id === taskId);
+  const updateTask = (taskId: number, newTitle: string) => {
+    // Find the category that contains the task
+    const category = todoStore.categories.find((cat) =>
+      cat.items.some((item) => item.id === taskId),
+    )
+
+    if (category) {
+      // Find the task within the category
+      const task = category.items.find((item) => item.id === taskId)
+
+      // Check for duplicate task description (excluding the current task)
+      const isDuplicate = category.items.some(
+        (item) => item.id !== taskId && item.description.toLowerCase() === newTitle.toLowerCase(),
+      )
+
+      if (isDuplicate) {
+        showErrorToast('Task with the same title already exists in this category.')
+        return
+      }
+
+      // Update the task title
       if (task) {
-        // Check for duplicate task description (excluding the current task)
-        const isDuplicate = category.items.some(
-          (item) => item.id !== taskId && item.description.toLowerCase() === newTitle.toLowerCase()
-        );
-
-        if (isDuplicate) {
-          window.alert("Task with the same title already exists in this category.");
-          return;
-        }
-
-        task.description = newTitle;
-        window.alert("Task updated successfully.");
-        return;
+        task.description = newTitle
+        showSuccessToast('Task updated successfully.')
       }
     }
-
-    window.alert("Task not found.");
-  };
+  }
 
   const deleteTask = (taskId: number) => {
-    for (const category of todoStore.categories) {
-      const taskIndex = category.items.findIndex((item) => item.id === taskId);
-      if (taskIndex !== -1) {
-        category.items.splice(taskIndex, 1);
-        return;
-      }
+    // Find the category that contains the task
+    const category = todoStore.categories.find((cat) =>
+      cat.items.some((item) => item.id === taskId),
+    )
+    if (category) {
+      category.items = category.items.filter((item) => item.id !== taskId)
+      showSuccessToast('Task deleted successfully!')
+    } else {
+      showErrorToast('Task not found.')
     }
-  };
+  }
 
   const toggleTaskCompletion = (taskId: number) => {
     todoStore.categories.forEach((category) => {
-      const task = category.items.find((item) => item.id === taskId);
+      const task = category.items.find((item) => item.id === taskId)
       if (task) {
-        task.completed = !task.completed;
+        task.completed = !task.completed
       }
-    });
-  };
+    })
+  }
 
   return {
-    addTaskToCategory,
-    updateTaskTitle,
+    addTask,
+    updateTask,
     deleteTask,
-    toggleTaskCompletion
-  };
+    toggleTaskCompletion,
+  }
 }
